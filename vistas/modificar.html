@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Modificar anuncio
+{% endblock %}
+
+{% block contenido_principal %}
+<h1 class="uk-article-title">Modificar anuncio</h1>
+<h2 class="tm-article-subtitle">Modifica la información del anuncio</h2>
+<form method="post" action="/anuncios/modificar/{{ anuncio._id.toString()}}" 
+      class="uk-form uk-form-horizontal" encType="multipart/form-data" >
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="titulo">Título</label>
+        <div class="uk-form-controls">
+            <input name="titulo" type="text" id="titulo" 
+                   placeholder="Título" minlength="10"
+                   value="{{ anuncio.titulo }}" required>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="categoria">Categoría</label>
+        <div class="uk-form-controls">
+            <select name="categoria" id="categoria" required>
+                {% for cat in categorias %}
+                    {% if cat===anuncio.categoria %}
+                        <option value="{{cat}}" selected>{{cat}}</option>
+                    {% endif %}
+                    {% if cat!==anuncio.categoria %}
+                        <option value="{{cat}}">{{cat}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="descripcion">Descripción</label>
+        <div class="uk-form-controls">
+            <textarea name="descripcion" id="descripcion"
+                      placeholder="Descripcion" minlength="50"
+                      style="margin: 0px; height: 110px; width: 300px;" 
+                      required>{{ anuncio.descripcion }}</textarea>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="precio">Precio</label>
+        <div class="uk-form-controls">
+            <input name="precio" type="number" id="precio" min="1"
+                   placeholder="50" style="margin-right: 5px; width: 80px;" 
+                   value="{{ anuncio.precio }}" required>€
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="edad">Edad</label>
+        <div class="uk-form-controls">
+            <input name="edad" type="number" id="edad" min="0"
+                   placeholder="2" style="margin-right: 5px; width: 80px;" 
+                   value="{{ anuncio.edad }}" required>Años
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="municipio">Municipio</label>
+        <div class="uk-form-controls">
+            <input name="municipio" type="text" id="municipio" 
+                   placeholder="León" minlength="2" 
+                   value="{{ anuncio.municipio }}"required>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="tipo">Tipo</label>
+        <div class="uk-form-controls">
+            <select name="tipo" id="tipo" required>
+                {% if anuncio.tipo==="oferta" %}
+                   <option value="oferta" selected>oferta</option>
+                    <option value="estandar">estandar</option>
+                {% endif %}
+                {% if anuncio.tipo==="estandar" %}
+                    <option value="oferta">oferta</option>
+                    <option value="estandar" selected>estandar</option>
+                {% endif %}
+            </select>
+            <!-- Ponerle valor al select de categoría -->
+            <script> 
+                $('#tipo').value= "{{anuncio.tipo}}";
+            </script>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="imagenes">Fotografías</label>
+        <div class="uk-form-controls">
+            <input type='file' multiple='multiple' accept='image/*' name='imagen1' 
+                   style="margin-top: 5px;" id='file' /><br/>
+            <input type='file' multiple='multiple' accept='image/*' name='imagen2' 
+                   style="margin-top: 5px;" id='file' /><br/>
+            <input type='file' multiple='multiple' accept='image/*' name='imagen3' 
+                   style="margin-top: 5px;" id='file' /><br/>
+            <input type='file' multiple='multiple' accept='image/*' name='imagen4' 
+                   style="margin-top: 5px;" id='file' /><br/>
+        </div>
+        <div class="uk-form-controls">
+            <img src="/images/{{ anuncio._id.toString()}}MIN-1.jpg" 
+                 style="width: 300px;">
+            <img src="/images/{{ anuncio._id.toString()}}MIN-2.jpg" 
+                 style="width: 300px;">
+            <img src="/images/{{ anuncio._id.toString()}}MIN-3.jpg" 
+                 style="width: 300px;">
+            <img src="/images/{{ anuncio._id.toString()}}MIN-4.jpg" 
+                 style="width: 300px;">
+            <script>
+                $("img").error(function () { 
+                    $(this).hide();
+                });
+            </script>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <div class="uk-form-controls">
+            <button class="uk-button uk-button-primary uk-button-large"  
+                    type="submit">Modificar</button>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block scripts  %}
+    <script>
+        $(function() {
+            $("#nav_misanuncios" ).addClass("uk-active");
+            $("#off_misanuncios" ).addClass("uk-active");
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Mis anuncios 
+{% endblock %}
+
+{% block contenido_principal %}
+    <h1 class="uk-article-title">Mis anuncios </h1>
+    <h2 class="tm-article-subtitle">Lista de anuncios publicados por mí.</h2>
+    <div class="uk-grid uk-margin">
+     {% for anuncio in anuncios %}
+       <!-- Miniatura de anuncio, en 1 o 2 columnas -->
+       <div class="uk-width-1-1">
+           <div class="uk-panel uk-panel-box">
+
+               <!-- dentro de cada anuncio 2 columnas siempre -->
+               <div class="uk-grid uk-margin">
+                   <!-- Columna 1 : foto -->
+                   <div class="uk-width-1-3">
+                       <img src="/images/{{ anuncio._id.toString()}}MIN-1.jpg" >
+                       <p class="uk-text-muted">{{anuncio.fecha}}</p>
+                       <p class="uk-text-bold">{{anuncio.municipio}}</p>
+                   </div>
+                   <!-- Columna 2 : datos -->
+                   <div class="uk-width-2-3">
+                        <!-- uk-text-center para centrar texto -->
+                        {% if anuncio.reserva!=="" %}
+                            <h2 class="uk-panel-title uk-text-truncate">
+                                RESERVADO POR "<a href="/contacto/{{anuncio.reserva}}
+                                                  /responder">{{anuncio.reserva}}</a>"</h2>
+                        {% endif %}
+                        <h3 class="uk-panel-title uk-text-truncate">
+                            {{ anuncio.titulo }} - {{anuncio.categoria}}
+                        </h3>
+                        <h4 class="uk-panel-title uk-text-truncate">
+                            {{ anuncio.edad }} Años
+                        </h4>
+                        <!-- Cortar texto -->
+                        <p class="trunk">{{ anuncio.descripcion }}</p>
+                        <p class="uk-text-bold uk-text-center">
+                            {{anuncio.precio}} € - {{anuncio.tipo}}</br>
+                        
+                        </p>
+                        <div class="uk-panel-badge">
+                            {% if anuncio.reserva==="" %}
+                             <a href="/anuncios/modificar/{{ anuncio._id.toString()}}"
+                                class="uk-button">Modificar</a>
+                            {% endif %}
+                             <a href="/anuncios/eliminar/{{ anuncio._id.toString()}}" 
+                                class="uk-button uk-button-danger">Eliminar</a>
+                        </div>
+                        <script>
+                            $('#trunk').text($('#trunk').text().substring(0,500) + '...');
+                        </script>
+                   </div>
+               </div>
+           </div>
+       </div>
+      {% endfor %}
+    </div>
+    <ul class="uk-pagination"></ul>
+{% endblock %}
+
+{% block scripts  %}
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                $("#nav_misanuncios" ).addClass("uk-active");
+                $("#off_misanuncios" ).addClass("uk-active");
+            });
+            $('.trunk').each(function() {
+                if($(this).text().length > 300){
+                    $(this).text($(this).text().substring(0,1000) + "...");
+                }
+            });
+            
+            //PAGINACION
+            if({{cantidad}} === 0)
+                paginas = 1;
+            else
+                paginas = Math.floor(({{cantidad}}-1)/5) + 1;
+            var pagina = {{pagina}};
+            //FLECHAS PAGINACION IZQUIERDA
+            if(pagina === 1)
+                $('ul.uk-pagination').append("<li class='uk-disabled'><span>\n\
+                    <i class='uk-icon-angle-double-left'></i></span></li>");
+            else
+                $('ul.uk-pagination').append("<li class='uk-disabled'><span>\n\
+                    <a href='/anuncios/misanuncios/" + (pagina-1) + "'>\n\
+                    <i class='uk-icon-angle-double-left'></i></a></li>");
+            //PAGINAS MENORES A LA SELECCIONADA
+            if(pagina < 5){//todos los numeros hasta el seleccionado
+                for(var i=1; i<pagina; i++)
+                    $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                        <a href='/anuncios/misanuncios/" + i + "'>" + i + "</a></li>");
+            }else{//puntos hasta el seleccionado
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                        <a href='/anuncios/misanuncios/1'>1</a></li>");
+                $('ul.uk-pagination').append("<li><span>...</span></li>");
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                        <a href='/anuncios/misanuncios/" + (pagina-2) + "'>" + 
+                        (pagina-2) + "</a></li>");
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                        <a href='/anuncios/misanuncios/" + (pagina-1) + "'>" + 
+                        (pagina-1) + "</a></li>");
+                
+            }
+            //PAGINA SELECCIONADA
+            $('ul.uk-pagination').append("<li class='uk-active'><span>" 
+                        + pagina + "</span></li>");
+            //PAGINAS MAYORES A LA SELECCIONADA
+            if(pagina+3 < paginas){//puntos hasta el numero de paginas
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                    <a href='/anuncios/misanuncios/" + (pagina+1) + "'>" + (pagina+1) + "</a></li>");
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                    <a href='/anuncios/misanuncios/" + (pagina+2) + "'>" + (pagina+2) + "</a></li>");
+                $('ul.uk-pagination').append("<li><span>...</span></li>");
+                $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                    <a href='/anuncios/misanuncios/" + paginas + "'>" + paginas + "</a></li>");
+            }else{//todos los numeros hasta el numero de paginas
+                for(i=(pagina+1); i<(paginas+1); i++)
+                    $('ul.uk-pagination').append("<li class='uk-disabled'>\n\
+                        <a href='/anuncios/misanuncios/" + i + "'>" + i + "</a></li>");
+            }
+            //FLECHAS PAGINACION DERECHA
+            if(pagina === paginas)
+                $('ul.uk-pagination').append("<li class='uk-disabled'><span>\n\
+                    <i class='uk-icon-angle-double-right'></i></span>");
+            else
+                $('ul.uk-pagination').append("<li class='uk-disabled'><span>\n\
+                    <a href='/anuncios/misanuncios/" + (pagina+1) + "'>\n\
+                    <i class='uk-icon-angle-double-right'></i></a></span></li>");
+        });   
+    </script>
+{% endblock %}

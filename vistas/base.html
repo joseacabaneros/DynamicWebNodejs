@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block titulo %} Anuncios {% endblock %}</title>
+        <link id="data-uikit-theme" rel="stylesheet" href="/css/uikit.min.css">
+        <link rel="stylesheet" href="/css/docs.css">
+        <script src="/jquery/jquery.js"></script>
+        <script src="/js/uikit.js"></script>
+        {% block scripts %}
+        {% endblock %}
+    </head>
+
+    <body class="tm-background">				
+        <nav class="tm-navbar">
+            
+            <!-- formulario  de busqueda -->
+            <!-- nav-bar-flip : parte derecha de la barra de navegación -->
+            <div class="uk-navbar-flip">
+                <div class="uk-panel uk-panel-box uk-hidden-small">
+                    <form method="get" action="/anuncios/buscar/1"
+                          class="uk-form uk-display-inline-block uk-margin">
+                        <input name="frase" type="text" placeholder="Search">
+                        <button type="submit" class="uk-button uk-button-primary">
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!--El boton de desconectar solo se muestra si hay usuario en sesion-->
+            {% if usuario %}
+                <div class="uk-navbar-flip">
+                     <div class="uk-panel uk-panel-box">
+                        <a class="uk-button" href="/logout">Desconectar</a>
+                     </div>
+                 </div>
+            {% endif %}
+            {% if usuario==undefined %}
+                <div class="uk-navbar-flip">
+                     <div class="uk-panel uk-panel-box">
+                        <a class="uk-button" href="/login">Login</a>
+                     </div>
+                 </div>
+            {% endif %}
+
+            <div class="uk-container">
+                <!-- logo principal -->
+                <!-- propiedad: uk-hidden-small , quitar en pantalla de móvil -->
+                <a class="uk-navbar-brand uk-hidden-small" href="/">
+                    <img class="uk-margin uk-margin-remove" src="/images/logo.png" width="104" height="42" title="Logo Anuncios" alt="Logo Anuncios">
+                </a>
+
+                <!-- Opción de menú en la Navbar, se esconde en pantallas pequeñas -->
+                <!-- propiedad: uk-hidden-small , quitar en pantalla de móvil -->
+                <ul class="uk-navbar-nav uk-hidden-small">
+                    <li id="nav_publicar"><a href="/anuncios/publicar">Publicar</a></li> <!-- propiedad li class="uk-active" para enlace activo -->
+                    <li id="nav_misanuncios"><a href="/anuncios/misanuncios/1">Mis anuncios</a></li>
+                    <li id="nav_favoritos"><a href="/anuncios/favoritos">Favoritos</a></li>
+                    <li>
+                        <div data-uk-dropdown>
+                            <ul class="uk-navbar-nav uk-hidden-small">
+                                <li id="nav_mensajes">
+                                    <a href="/mensajes/recibidos">Mensajes <i class="uk-icon-caret-down"></i></a>
+                                </li> 
+                            </ul>
+                            <div class="uk-dropdown">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li id="nav_recibidos"><a href="/mensajes/recibidos">Recibidos</a></li>
+                                    <li id="nav_enviados"><a href="/mensajes/enviados">Enviados</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <!-- Alternativa: Lo que aparece en el navbar en pantallas pequeñas (moviles) -->
+                <!-- Importante: El menú movil se está definiendo al final de la página: uk-offcanvas-bar -->
+                <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+                <div class="uk-navbar-brand uk-navbar-center uk-visible-small">
+                    <!-- El logo hay que quitarlo, porque de lo contrario aparece en 1º posición -->
+                    <img src="/images/logo.png" width="104" height="42" title="Logo Anuncios" alt="Logo Anuncios">
+                </div>
+                
+            </div>
+	
+        </nav>
+
+    <!-- uk-block-muted : color claro -->
+    <div class="uk-block uk-block-muted">
+
+        <div class="uk-grid">
+            <!-- formulario  de busqueda -->
+            <!-- uk-visible-small : solo se ve en pantalla pequeña -->
+            <div class="uk-width-medium-4-4 uk-visible-small">
+                <div class="uk-panel uk-panel-box uk-container-center uk-text-center">
+                    <form method="get" action="/anuncios/buscar"
+                          class="uk-form">
+                        <input name="frase" type="text" placeholder="Search">
+                        <button type="submit" class="uk-button uk-button-primary">
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- tm-sidebar : barra lateral -->
+            <!-- Especifica cuando ocupa para diferentes pantallas "uk-width-medium-1-2 uk-width-large-1-3" -->
+            <div class="tm-sidebar uk-width-medium-1-4 uk-hidden-small">
+                <ul class="tm-nav uk-nav">
+                    <li class="uk-nav-header">Categorías</li>
+                    <!-- usar li class="uk-active" para el elemento activo -->
+                    {% for cat in categorias %}
+                        <li id="nav_{{cat}}"><a href="/anuncios/categoria/{{cat}}/1" 
+                                                class="uk-text-uppercase">{{cat}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- tm-main : contenido principal -->
+            <!-- Podemos especificar el ancho para 4 resoluciones = large, medium, small o solo para medium y el resto lo "infiere" -->
+            <div class="tm-main uk-width-medium-3-4  uk-width-small-4-4">
+                <!--Formulario de busqueda avanzada-->
+                <div class="uk-panel uk-panel-box uk-hidden-small">
+                    <h3>Búsqueda avanzada</h3>
+                    <form method="get" action="/anuncios/avanzada/1"
+                          class="uk-form uk-display-inline-block uk-margin">
+                        <input class="uk-form-large" name="frase" type="text" placeholder="Search" style="margin-right: 20px; width: 180px;" required>
+                        <select class="uk-form-large" name="categoria" id="categoria" style="margin-right: 20px;" required>
+                            {% for cat in categorias %}
+                                <option value="{{cat}}">{{cat}}</option>
+                            {% endfor %}
+                        </select>
+                        <input class="uk-form-large" name="preciomin" type="number" id="preciomin" min="0"
+                            accept=""placeholder="Precio desde" style="margin-right: 5px; width: 150px;" required>€
+                        <input class="uk-form-large" name="preciomax" type="number" id="preciomax" min="1"
+                            accept=""placeholder="Hasta" style="margin-left: 20px; margin-right: 5px; width: 150px;" required>€
+                        <button type="submit" class="uk-button-large uk-button-primary" style="margin-left: 20px;">
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+                <div class="uk-panel uk-panel-box uk-visible-small">
+                    <h3>Búsqueda avanzada</h3>
+                    <form method="get" action="/anuncios/avanzada/1"
+                          class="uk-form uk-form-horizontal uk-margin">
+                        <div class="uk-form-row">
+                            <input class="uk-width-1-1 uk-form-large" name="frase" type="text" placeholder="Search" required>
+                        </div>
+                        <div class="uk-form-row">
+                            <select class="uk-width-1-1 uk-form-large" name="categoria" id="categoria" required>
+                                {% for cat in categorias %}
+                                    <option value="{{cat}}">{{cat}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="uk-form-row">
+                            <input class="uk-width-1-1 uk-form-large" name="preciomin" type="number" id="preciomin" min="0"
+                                accept=""placeholder="Precio desde" required>
+                        </div>
+                        <div class="uk-form-row">
+                            <input class="uk-width-1-1 uk-form-large" name="preciomax" type="number" id="preciomax" min="1"
+                                accept=""placeholder="Hasta" required>
+                        </div>
+                        <div class="uk-form-row">
+                            <button type="submit" class="uk-button-large uk-button-primary uk-form-row uk-width-1-1">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Otro panel : bloque de contenido -->
+                <div class="uk-panel uk-panel-box">
+                    <!-- aticle : dentro de contenido -->  
+                    <article class="uk-article">
+                        {% block contenido_principal %}
+                            
+                        {% endblock %}
+                    </article>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pie de página -->
+    <div class="tm-footer">
+        <div class="uk-panel uk-text-center">
+            {% block pie %}
+            {% endblock %}
+            <p>Diseño de interfaces de usuario</p>
+        </div>
+    </div>
+		
+		
+    <!-- Menú parte izquierda / en modo móvil -->
+    <div id="tm-offcanvas" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+            <ul class="uk-nav uk-nav-offcanvas">
+                <li class="uk-nav-header">Principal</li>
+                <li id="off_publicar"><a href="/anuncios/publicar">Publicar</a></li> <!-- propiedad li class="uk-active" para enlace activo -->
+                <li id="off_modificar"><a href="/anuncios/misanuncios/1">Mis anuncios</a></li>
+                <li id="off_favoritos"><a href="/anuncios/favoritos">Favoritos</a></li>
+
+                <li class="uk-nav-header">Categorías</li>
+                <!-- usar li class="uk-active" para el elemento activo -->
+                {% for cat in categorias %}
+                    <li id="off_{{cat}}"><a href="/anuncios/categoria/{{cat}}/1" 
+                                            class="uk-text-uppercase">{{cat}}</a></li>
+                {% endfor %}
+                
+                <li class="uk-nav-header">Mensajes</li>
+                <li id="off_recibidos"><a href="/mensajes/recibidos">Recibidos</a></li>
+                <li id="off_enviados"><a href="/mensajes/enviados">Enviados</a></li>
+            </ul>
+        </div>
+    </div>
+        
+  </body>
+</html>

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Registro de usuario
+{% endblock %}
+
+{% block contenido_principal %}
+<h1 class="uk-article-title">Registro de usuario</h1>
+<h2 class="tm-article-subtitle">
+    Introduce la información de registro para crear un nuevo usuario
+</h2>
+{% if error==="seudonimo" %}
+    <div class="uk-alert uk-alert-danger">
+        El SEUDÓNIMO ya ha sido registrado. Pruebe con otro.
+    </div>
+{% endif %}
+{% if error==="email" %}
+    <div class="uk-alert uk-alert-danger">
+        El EMAIL ya ha sido registrado. Pruebe con otro.
+    </div>
+{% endif %}
+<form method="post" action="/registro" class="uk-form uk-form-horizontal"
+      encType="multipart/form-data" >
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="seudonimo">Seudónimo</label>
+        <div class="uk-form-controls">
+            <input name="seudonimo" type="text" id="nombre" minlength="3"
+                   placeholder="juanfer23" required>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="email">Email</label>
+        <div class="uk-form-controls">
+            <input name="email" type="email" id="email" 
+                   placeholder="email@email.com" required>
+        </div>
+    </div>   
+    <div class="uk-form-row">
+        <label class="uk-form-label" for="password">Contraseña</label>
+        <div class="uk-form-controls uk-form-password">
+            <input type="password" name="password" placeholder="Contraseña" minlength="5" required>
+            <a href="" class="uk-form-password-toggle" 
+               data-uk-form-password="{lblShow:'Mostrar', lblHide:'Ocultar'}">Mostrar</a>
+        </div>
+    </div>
+    <div class="uk-form-row">
+        <div class="uk-form-controls">
+            <button class="uk-button uk-button-primary uk-button-large"  
+                    type="submit">Registrarse</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts  %}
+     <script src="/js/components/form-password.js"></script>
+{% endblock %}

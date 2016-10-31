@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Favoritos
+{% endblock %}
+
+{% block contenido_principal %}
+    <h1 class="uk-article-title">Favoritos</h1>
+    <h2 class="tm-article-subtitle">Listado de sus favoritos. {{cantidad}} anuncios</h2>
+    <div class="uk-grid uk-margin">
+     {% for anuncio in favoritos %}
+       <!-- Miniatura de anuncio, en 1 o 2 columnas -->
+       <div class="uk-width-medium-1-1 uk-width-large-1-2">
+            <div class="uk-panel uk-panel-box">
+                <!-- dentro de cada anuncio 2 columnas siempre -->
+                <div class="uk-grid uk-margin">
+                    <!-- Columna 1 : foto -->
+                    <div class="uk-width-1-2">
+                        <h4 class="uk-panel-title uk-text-truncate">
+                            <a href="/anuncios/favorito/eliminar/{{anuncio._id.toString()}}" 
+                               title="Eliminar de favoritos" class="uk-icon-button uk-icon-remove"></a>
+                            <a href="/anuncios/reservar/{{anuncio._id.toString()}}" 
+                               title="Reservar" class="uk-icon-button uk-icon-credit-card-alt"></a>
+                        </h4>
+                        <h5 class="uk-panel-title uk-text-truncate">Contacto: 
+                            <a href ="/contacto/{{anuncio.usuario}}/{{anuncio.titulo}}">{{anuncio.usuario}}</a>
+                        </h5>
+                        <a href ="/anuncio/{{anuncio._id.toString()}}">
+                            <img class="uk-border-circle" src="/images/{{anuncio._id.toString()}}MIN-1.jpg" >
+                        </a>
+                        <p class="uk-text-muted">{{anuncio.fecha}}</p>
+                        <p class="uk-text-bold">{{anuncio.municipio}}</p>
+                    </div>
+                    <!-- Columna 2 : datos -->
+                    <div class="uk-width-1-2">
+                        <a href ="/anuncio/{{anuncio._id.toString()}}">
+                            <!-- uk-text-center para centrar texto -->
+                            <h3 class="uk-panel-title uk-text-truncate uk-text-bold">{{ anuncio.titulo }}</h3>
+                            <h4 class="uk-panel-title uk-text-truncate">{{ anuncio.edad }} Años</h4>
+                            <!-- Cortar texto -->
+                            <p class="uk-text-break trunk">{{ anuncio.descripcion }}</p>
+                            <p class="uk-text-bold uk-text-center uk-text-large">
+                                 {{anuncio.precio}} € - {{anuncio.tipo}}
+                            </p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+       </div>
+      {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts  %}
+    <script>
+        $(document).ready(function() {
+            $("#nav_favoritos" ).addClass("uk-active");
+            $("#off_favoritos" ).addClass("uk-active");
+            $('.trunk').each(function() {
+                if($(this).text().length > 300){
+                    $(this).text($(this).text().substring(0,300) + "...");
+                }
+            });
+        });
+    </script>
+{% endblock %}

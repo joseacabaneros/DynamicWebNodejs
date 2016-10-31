@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Mis anuncios 
+{% endblock %}
+
+{% block contenido_principal %}
+    {% if enviados === true %}
+        <h1 class="uk-article-title">Mis mensajes - Enviados</h1>
+        <h2 class="tm-article-subtitle">Lista de mensajes ENVIADOS. {{cantidad}} mensajes.</h2>
+    {% endif %}
+    {% if enviados === false %}
+        <h1 class="uk-article-title">Mis mensajes - Recibidos</h1>
+        <h2 class="tm-article-subtitle">Lista de mensajes RECIBIDOS. {{cantidad}} mensajes.</h2>
+    {% endif %}
+    <div class="uk-grid uk-margin">
+    {% for mensaje in mensajes %}
+       <div class="uk-width-1-1">
+           <div class="uk-panel uk-panel-box">
+               <div class="uk-grid uk-margin">
+                   <div class="uk-width-1-1">
+                        {% if enviados === true %}
+                            <h3 class="uk-panel-title uk-text-truncate">
+                                Mensaje para: <span class="uk-text-bold">{{mensaje.receptor}}</span>
+                            </h3>
+                        {% endif %}
+                        {% if enviados === false %}
+                            <h3 class="uk-panel-title uk-text-truncate">
+                                Mensaje de: <span class="uk-text-bold">{{mensaje.emisor}}</span>
+                            </h3>
+                        {% endif %}
+                        <h4 class="uk-panel-title uk-text-muted">
+                            {{ mensaje.fecha }}
+                        </h4>
+                        <p class="trunk">{{ mensaje.texto }}</p>
+                        <div class="uk-panel-badge">
+                            {% if enviados === false %}
+                                <a href="/contacto/{{mensaje.emisor}}/responder"
+                                    class="uk-button">Responder</a>
+                            {% endif %}
+                             <a href="/mensajes/eliminar?id={{mensaje._id.toString()}}" 
+                                class="uk-button uk-button-danger">Eliminar</a>
+                        </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+      {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts  %}
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                $("#nav_mensajes" ).addClass("uk-active");
+                if({{enviados}} === true)
+                    $("#off_enviados" ).addClass("uk-active");
+                else
+                    $("#off_recibidos" ).addClass("uk-active");
+            });
+        });   
+    </script>
+{% endblock %}

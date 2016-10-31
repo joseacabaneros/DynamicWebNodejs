@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    Anuncios : {{ anuncio.titulo }} 
+{% endblock %}
+
+{% block contenido_principal %}
+    <div class="uk-grid uk-margin">
+        <div class="uk-width-4-5">
+            <h1 class="uk-article-title">{{ anuncio.titulo }} ({{ anuncio.edad }} Años)</h1>
+            <h2 class="uk-text-bold">{{anuncio.precio}} € - {{ anuncio.tipo }}</h2>
+            <h3 class="uk-text-muted">{{ anuncio.municipio }}</h3>
+        </div>
+        <div class="uk-width-1-5" style="margin-top: 50px">
+            <p class="uk-text-muted">Anuncio de:</p>
+            <h2 class="uk-text-bold uk-text-uppercase">{{ anuncio.usuario }}</h2>
+            <h3 class="uk-text-muted uk-text-uppercase">{{ anuncio.categoria }}</h3>
+        </div>
+    </div>
+    <div class="uk-grid uk-margin">
+       <!-- Ocupa 1 de 1-->
+       <div class="uk-width-1-1 ">
+           <div class="uk-panel uk-panel-box">
+                <p>{{ anuncio.descripcion }}</p>
+                <img src="/images/{{ anuncio._id.toString()}}-1.jpg" >
+                <img src="/images/{{ anuncio._id.toString()}}-2.jpg" >
+                <img src="/images/{{ anuncio._id.toString()}}-3.jpg" >
+                <img src="/images/{{ anuncio._id.toString()}}-4.jpg" >
+                <p class="uk-text-muted">{{anuncio.fecha}}</p>
+           </div>
+       </div>
+    </div>
+    <div class="uk-panel-badge">
+        <a href="/anuncios/favorito/{{anuncio._id.toString()}}" 
+           class="uk-button uk-button-success uk-button-large">
+           <i class="uk-icon-heart"></i>
+           Añadir a favoritos
+        </a>
+        <a href="/anuncios/reservar/{{anuncio._id.toString()}}" 
+            class="uk-button uk-button-primary uk-button-large">
+            <i class="uk-icon-credit-card-alt"></i>
+                Reservar
+        </a>
+    </div>
+    <script>
+        $("img").error(function () { 
+            $(this).hide();
+        });
+    </script>
+{% endblock %}
+
+{% block scripts  %}
+    <script>
+        $(function() {
+            $("#nav_{{ anuncio.categoria }} " ).addClass("uk-active");
+            $("#off_{{ anuncio.categoria }} " ).addClass("uk-active");
+        });
+    </script>
+{% endblock %}

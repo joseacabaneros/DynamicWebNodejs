@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo  %}
+    {{ mensaje }}
+{% endblock %}
+
+{% block contenido_principal %}
+    <!--Estilo visual de error-->
+    {% if error %}   
+        <div class="uk-alert uk-alert-large uk-alert-danger">
+            <a href="/anuncios/categoria/aves/1" class="uk-alert-close uk-close"></a>
+            <h2>{{ error }}</h2>
+            <p>{{ mensaje }}</p>
+        </div>
+    {% endif %}
+    <!--Estilo visual de exito-->
+    {% if exito %}   
+        <div class="uk-alert uk-alert-large uk-alert-success">
+            <a href="/anuncios/categoria/aves/1" class="uk-alert-close uk-close"></a>
+            <h2>{{ exito }}</h2>
+            <p>{{ mensaje }}</p>
+        </div>
+    {% endif %}     
+{% endblock %}
+
